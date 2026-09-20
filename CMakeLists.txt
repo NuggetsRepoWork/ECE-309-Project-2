@@ -1,12 +1,15 @@
-﻿# CMakeList.txt : CMake project for ECE 309 Project 2, include source and define
-# project specific logic here.
+﻿# CMakeList.txt : Top-level CMake project file, do global configuration
+# and include sub-projects here.
 #
+cmake_minimum_required (VERSION 3.10)
 
-# Add source to this project's executable.
-add_executable (CMakeTarget "ECE 309 Project 2.cpp" "ECE 309 Project 2.h")
-
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET CMakeTarget PROPERTY CXX_STANDARD 20)
+# Enable Hot Reload for MSVC compilers if supported.
+if (POLICY CMP0141)
+  cmake_policy(SET CMP0141 NEW)
+  set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
 endif()
 
-# TODO: Add tests and install targets if needed.
+project ("ECE 309 Project 2")
+
+# Include sub-projects.
+add_subdirectory ("ECE 309 Project 2")
