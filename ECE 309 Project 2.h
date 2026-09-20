@@ -1,4 +1,4 @@
-// ECE 309 Project 2.h : Include file for standard system include files,
+﻿// ECE 309 Project 2.h : Include file for standard system include files,
 // or project specific include files.
 
 #pragma once
