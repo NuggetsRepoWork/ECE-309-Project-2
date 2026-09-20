@@ -1,5 +1,4 @@
-#include "ECE 309 Project 2.h"
-
+#include "core/conversation.h"
 
 Conversation::~Conversation() {
     delete[] data_;

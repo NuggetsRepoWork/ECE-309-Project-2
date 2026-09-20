@@ -1,19 +1,24 @@
-#pragma once
+#ifndef CONVERSATION_H
+#define CONVERSATION_H
 
-#include "ECE 309 Project 2.h"
+#include "core/message.h"
+#include <cstddef>
 
 class Conversation {
 public:
-    // Constructor & Destructor
-    Conversation();
     ~Conversation();
 
-    // Core Mutators
+    Conversation(const Conversation& other);
+    Conversation& operator=(const Conversation& other);
+
+    Conversation(Conversation&& other) noexcept;
+    Conversation& operator=(Conversation&& other) noexcept;
+
     void append(Message m);
 
-    // Accessors & Iterators
     std::size_t size() const noexcept;
     const Message& at(std::size_t i) const;
+
     const Message* begin() const noexcept;
     const Message* end() const noexcept;
 
@@ -21,7 +26,6 @@ private:
     Message* data_ = nullptr;
     std::size_t size_ = 0;
     std::size_t capacity_ = 0;
+};
 
-    // Growth helper
-    void reallocate(std::size_t new_capacity);
-};#pragma once
+#endif

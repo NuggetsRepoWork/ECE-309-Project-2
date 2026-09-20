@@ -1,12 +1,11 @@
-
-#include "ECE 309 Project 2.h"
+#include "core/message.h"
 
 Message::Message()
     : role_(Role::System), content_("") {
 }
 
 Message::Message(Role role, std::string content)
-    : role_(role), content_(std::move(content)) {
+    : role_(role), content_(content) {
 }
 
 Role Message::role() const noexcept {
