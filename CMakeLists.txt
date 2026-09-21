@@ -8,14 +8,19 @@ project(MiniHarness VERSION 1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Enable strict warnings and AddressSanitizer.
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -fsanitize=address,undefined -g")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address,undefined")
-
 include_directories(include)
 
-# 1. Define the core files (everything EXCEPT main.cpp).
+# Set compiler-specific flags conditionally
+if(MSVC)
+    add_compile_options(/W4 /fsanitize=address)
+else()
+    add_compile_options(-Wall -Wextra -Wpedantic -fsanitize=address,undefined -g)
+    add_link_options(-fsanitize=address,undefined)
+endif()
+
+# 1. Define the core files (everything EXCEPT main.cpp)
 set(CORE_SOURCES
+    src/message.cpp
     src/conversation.cpp
     src/sentinel_scanner.cpp
     src/model_client.cpp
@@ -24,8 +29,8 @@ set(CORE_SOURCES
     src/harness.cpp
 )
 
-# 2. Build the main program.
+# 2. Build the main program
 add_executable(miniharness ${CORE_SOURCES} src/main.cpp)
 
-# 3. Build the test suite.
+# 3. Build the test suite
 add_executable(test_p2 ${CORE_SOURCES} tests/p2/test_p2.cpp)
