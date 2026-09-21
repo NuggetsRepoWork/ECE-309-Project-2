@@ -1,15 +1,31 @@
-﻿# CMakeList.txt : Top-level CMake project file, do global configuration
-# and include sub-projects here.
-#
-cmake_minimum_required (VERSION 3.10)
+# CMakeLists.txt
+# PROVIDED — do not modify unless you add new source files of your own
+# (e.g. a separate message.cpp), in which case add them to CORE_SOURCES.
 
-# Enable Hot Reload for MSVC compilers if supported.
-if (POLICY CMP0141)
-  cmake_policy(SET CMP0141 NEW)
-  set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
-endif()
+cmake_minimum_required(VERSION 3.16)
+project(MiniHarness VERSION 1.0 LANGUAGES CXX)
 
-project ("ECE 309 Project 2")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Include sub-projects.
-add_subdirectory ("ECE 309 Project 2")
+# Enable strict warnings and AddressSanitizer.
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -fsanitize=address,undefined -g")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address,undefined")
+
+include_directories(include)
+
+# 1. Define the core files (everything EXCEPT main.cpp).
+set(CORE_SOURCES
+    src/conversation.cpp
+    src/sentinel_scanner.cpp
+    src/model_client.cpp
+    src/scripted_client.cpp
+    src/replay_client.cpp
+    src/harness.cpp
+)
+
+# 2. Build the main program.
+add_executable(miniharness ${CORE_SOURCES} src/main.cpp)
+
+# 3. Build the test suite.
+add_executable(test_p2 ${CORE_SOURCES} tests/p2/test_p2.cpp)
