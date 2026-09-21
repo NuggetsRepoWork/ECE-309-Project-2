@@ -1,56 +1,58 @@
 #include "core/sentinel_scanner.h"
 
+#include <stdexcept>
+
 SentinelScanner::SentinelScanner(std::string sentinel)
-    : sentinel_(sentinel), pending_("") {
+    : sentinel_(std::move(sentinel)), pending_("") {
+
+    if (sentinel_.empty()) {
+        throw std::invalid_argument("Sentinel cannot be empty");
+    }
 }
 
 SentinelScanner::Out SentinelScanner::feed(std::string_view chunk) {
-    Out result;
-    result.safe_text = "";
-    result.sentinel_found = false;
 
-    for (char c : chunk) {
-        pending_ = pending_ + c;
+    std::string combined;
 
-        if (pending_.size() <= sentinel_.size()) {
-            if (pending_ == sentinel_) {
-                result.sentinel_found = true;
-                pending_.clear();
-                break;
-            }
-        }
+    combined.reserve(pending_.size() + chunk.size());
 
-        if (pending_.size() >= sentinel_.size()) {
-            bool matches = true;
+    combined = pending_;
+    combined.append(chunk.data(), chunk.size());
 
-            for (std::size_t i = 0; i < sentinel_.size(); i++) {
-                if (pending_[i] != sentinel_[i]) {
-                    matches = false;
-                    break;
-                }
-            }
+    std::size_t found = combined.find(sentinel_);
 
-            if (matches) {
-                result.sentinel_found = true;
-                pending_.clear();
-                break;
-            }
+    if (found != std::string::npos) {
 
-            result.safe_text = result.safe_text + pending_[0];
-            pending_.erase(0, 1);
-        }
+        std::string safe_text = combined.substr(0, found);
+
+        pending_.clear();
+
+        return { safe_text, true };
     }
 
-    return result;
+    std::size_t keep_count = sentinel_.size() - 1;
+
+    if (combined.size() <= keep_count) {
+
+        pending_ = combined;
+
+        return { "", false };
+    }
+
+    std::size_t safe_count = combined.size() - keep_count;
+
+    std::string safe_text = combined.substr(0, safe_count);
+
+    pending_ = combined.substr(safe_count);
+
+    return { safe_text, false };
 }
 
 SentinelScanner::Out SentinelScanner::flush() {
-    Out result;
 
-    result.safe_text = pending_;
-    result.sentinel_found = false;
+    std::string safe_text = pending_;
 
     pending_.clear();
 
-    return result;
+    return { safe_text, false };
 }
