@@ -1,11 +1,10 @@
-#ifndef SENTINEL_SCANNER_H
-#define SENTINEL_SCANNER_H
+#ifndef CORE_SENTINEL_SCANNER_H
+#define CORE_SENTINEL_SCANNER_H
 
 #include <string>
 #include <string_view>
 
 class SentinelScanner {
-
 public:
     explicit SentinelScanner(std::string sentinel);
 
@@ -20,6 +19,7 @@ public:
 private:
     std::string sentinel_;
     std::string pending_;
+    bool found_ = false;
 };
 
-#endif#pragma once
+#endif // CORE_SENTINEL_SCANNER_H

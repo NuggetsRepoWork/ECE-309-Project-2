@@ -1,11 +1,13 @@
-#ifndef CONVERSATION_H
-#define CONVERSATION_H
+#ifndef CORE_CONVERSATION_H
+#define CORE_CONVERSATION_H
 
-#include "core/message.h"
 #include <cstddef>
+#include <stdexcept>
+#include "core/message.h"
 
 class Conversation {
 public:
+    Conversation();
     ~Conversation();
 
     Conversation(const Conversation& other);
@@ -20,7 +22,7 @@ public:
     const Message& at(std::size_t i) const;
 
     const Message* begin() const noexcept;
-    const Message* end() const noexcept;
+    const Message* end()   const noexcept;
 
 private:
     Message* data_ = nullptr;
@@ -28,4 +30,4 @@ private:
     std::size_t capacity_ = 0;
 };
 
-#endif
+#endif // CORE_CONVERSATION_H
